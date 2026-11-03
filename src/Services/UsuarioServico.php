@@ -24,6 +24,7 @@ final class UsuarioServico
         $sql = "SELECT id, nome, email, tipo FROM usuarios ORDER BY nome";
         try{
           $consulta = $this->conexao->query($sql);
+                    return $consulta->fetchAll();
         } catch (PDOException $e) {
             // Registrar/logar os detalhes do erro em logs/erro.log
             Utils::registrarLog($e);
