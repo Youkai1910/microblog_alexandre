@@ -48,7 +48,7 @@ final class UsuarioServico
             $consulta = $this->conexao->prepare($sql);
             $consulta->bindValue(":nome", $usuario->getNome());
             $consulta->bindValue(":email", $usuario->getEmail());
-            $consulta->bindValue(": senha", $usuario->getSenha());
+            $consulta->bindValue(":senha", $usuario->getSenha());
             $consulta->bindValue(":tipo", $usuario->getTipoUsuario()->value);
 
             $consulta->execute();

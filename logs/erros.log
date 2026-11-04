@@ -1,10 +1,12 @@
-[2026-11-03 11:24:36]
-Arquivo: C:\backend\microblog_alexandre\src\Services\UsuarioServico.php
-Linha: 26
-Mensagem: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'microblog_2026.usuario' doesn't exist
 
-[2026-11-04 08:54:45]
-Arquivo: C:\backend\microblog_alexandre\admin\usuarios.php
-Linha: 12
-Mensagem: Call to undefined method Microblog\Services\UsuarioServico::listarTodo()
+
+[2026-11-04 10:45:26]
+Arquivo: C:\backend\microblog_alexandre\src\Services\UsuarioServico.php
+Linha: 54
+Mensagem: SQLSTATE[HY093]: Invalid parameter number: parameter was not defined
+
+[2026-11-04 10:45:26]
+Arquivo: C:\backend\microblog_alexandre\src\Services\UsuarioServico.php
+Linha: 58
+Mensagem: Erro ao inserir usuario
 
