@@ -60,7 +60,7 @@ final class UsuarioServico
 
     public function buscarPorId(int $id): ?array
     {
-        $sql = "SELECTE id, nome, email, senha, tipo FROM usuarios WHERE id - :id";
+        $sql = "SELECT id, nome, email, senha, tipo FROM usuarios WHERE id = :id";
         try {
             $consulta = $this->conexao->prepare($sql);
             $consulta->bindValue(":id", $id);
