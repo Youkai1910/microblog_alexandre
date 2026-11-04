@@ -52,10 +52,28 @@ final class UsuarioServico
             $consulta->bindValue(":tipo", $usuario->getTipoUsuario()->value);
 
             $consulta->execute();
-
         } catch (PDOException $e) {
-          Utils :: registrarLog($e);
-        throw new Exception("Erro ao inserir usuario");
+            Utils::registrarLog($e);
+            throw new Exception("Erro ao inserir usuario");
+        }
+    }
+
+    public function buscarPorId(int $id): ?array
+    {
+        $sql = "SELECTE id, nome, email, senha, tipo FROM usuarios WHERE id - :id";
+        try {
+            $consulta = $this->conexao->prepare($sql);
+            $consulta->bindValue(":id", $id);
+            $consulta->execute();
+
+            // Ternário conciso/abreviado (se fetch for TRUE, retorna ele mesmo; senão null)
+            return $consulta->fetch() ?: null;
+
+            // Usando ternário tradicional
+            // return $consulta->fetch() ? $consulta->fetch() : null;
+        } catch (PDOException $e) {
+            Utils::registrarLog($e);
+            throw new Exception("Erro ao buscar usuario por ID.");
         }
     }
 }
