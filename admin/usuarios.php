@@ -10,7 +10,13 @@ $listaDeUsuarios = [];
 try {
     $usuarioServico = new UsuarioServico();
     $listaDeUsuarios = $usuarioServico->listarTodos();
-} catch (Exception $e) {
+} catch (Throwable $e) {
+    // Usamos Throwable para capturar tanto situações de Exception quanto Error
+
+    // Registramos o erro no log para análise do programador
+    Utils::registrarLog($e);
+
+    // Definimos uma mensagem genérica para exibir no front-end
     $mensagemErro = "Não foi possivel carregar a lista de usuários";
 }
 //utils::dump($listaDeUsuarios);
