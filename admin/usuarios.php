@@ -16,7 +16,7 @@ try {
     // Registramos o erro no log para análise do programador
     Utils::registrarLog($e);
 
-    // Definimos uma mensagem genérica para exibir no front-end
+    // Definimos uma mensagem genérica para exibir no Front-End
     $mensagemErro = "Não foi possivel carregar a lista de usuários";
 }
 //utils::dump($listaDeUsuarios);
