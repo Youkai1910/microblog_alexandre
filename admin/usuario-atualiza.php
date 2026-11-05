@@ -3,6 +3,7 @@
 use Microblog\Enums\TipoUsuario;
 use Microblog\Helpers\Utils;
 use Microblog\Helpers\Validacoes;
+use Microblog\Models\Usuario;
 use Microblog\Services\UsuarioServico;
 
 require_once __DIR__ . '/../vendor/autoload.php';
@@ -22,12 +23,11 @@ try {
 } catch (Throwable $e) {
     Utils::registrarLog($e);
     $mensagemErro = "Nao foi possivel carregar os dados do usuario";
-
 }
 // Se a consulta retornar null e não tiver, apresentamos uma mensagem avisando que nada foi
 // encontrado
-if($dadosUsuario === null && $mensagemErro === ""){
-Utils::alertaErro("Usuario nao encontrado!");
+if ($dadosUsuario === null && $mensagemErro === "") {
+    Utils::alertaErro("Usuario nao encontrado!");
 }
 
 /* Inicializa variáveis para armazenar os valores do formulário,
@@ -36,32 +36,52 @@ $nome = $dadosUsuario['nome'] ?? "";
 $email = $dadosUsuario['email'] ?? "";
 $tipo = $dadosUsuario['tipo'] ?? "";
 
-if($_SERVER["REQUEST_METHOD"]=== "POST"){
-try {
-// Captura e normaliza os dados do formulário
-$nome = Utils::normalizarEntrada($_POST['nome' ] ?? "");
-$email = Utils::normalizarEntrada($_POST['email' ] ?? "", 'email');
-$tipo = Utils::normalizarEntrada($_POST['tipo' ] ?? "");
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    try {
+        // Captura e normaliza os dados do formulário
+        $nome = Utils::normalizarEntrada($_POST['nome'] ?? "");
+        $email = Utils::normalizarEntrada($_POST['email'] ?? "", 'email');
+        $tipo = Utils::normalizarEntrada($_POST['tipo'] ?? "");
 
-// Valida os dados e associa o tipo à Enumeração
-Validacoes::validarNome($nome);
-Validacoes::validarEmail($email);
-Validacoes::validarTipo($tipo);
-$tipoEnum = TipoUsuario::from($tipo);
+        // Valida os dados e associa o tipo à Enumeração
+        Validacoes::validarNome($nome);
+        Validacoes::validarEmail($email);
+        Validacoes::validarTipo($tipo);
+        $tipoEnum = TipoUsuario::from($tipo);
+
+        //Capturando literalmente a senha como foi digitado
+        $senhaBruta = $_POST['senha'] ?? '';
+
+        /* Se a senha não foi preenchida, mantenha a senha atual. */
+        /* Se o campo senha for preenchido, verificar se é a mesma senha. */
+        /* Se for a mesma, não faz nada. Se for uma nova senha, codifica (faz o hash) */
+        if ($senhaBruta !== '') {
+            Validacoes::validarSenha($senhaBruta);
+            $senha = Utils::verificarSenha($senhaBruta, $dadosUsuario['senha']);
+        } else {
+            $senha = $dadosUsuario['senha'];
+        }
+        // Criando um objeto com os dados do usuário visando a atualização no bando
+        $usuario = new Usuario($nome, $email, $senha, $tipoEnum, $id);
+         
+        // Chamamos o serviço responsável por atualizar o usuário
+        $usuarioServico->atualizar($usuario);
+        
+        // Se tudo de certo, redirecionamos:
+        header("location:usuario.php");
+        exit;
+
+    } catch (InvalidArgumentException $e) {// se validações falharem
+        $mensagemErro = $e->getMessage();
+    } catch (Throwable $e) {// se qualquer outro erro/exceção acontecer
+        Utils::registrarLog($e);
+        $mensagemErro = "Não foi possivel atualizar o usuário. Tente novamente";
+    }
 }
 
-catch (InvalidArgumentException $e) {
-
-} catch (Throwable $e){
-   
-}
-}
 
 
-
-
-
-require_once __DIR__ . '/../includes/cabecalho-admin.php'; 
+require_once __DIR__ . '/../includes/cabecalho-admin.php';
 ?>
 
 <div class="row">
@@ -83,8 +103,8 @@ require_once __DIR__ . '/../includes/cabecalho-admin.php';
             <div class="mb-3">
                 <label class="form-label" for="tipo">Tipo:</label>
                 <select class="form-select" name="tipo" id="tipo">
-                    <option value="editor" <?php if ($tipo === 'editor') echo 'selected'?>>Editor</option>
-                    <option value="admin"<?php if ($tipo === 'admin') echo 'selected'?>>Administrador</option>
+                    <option value="editor" <?php if ($tipo === 'editor') echo 'selected' ?>>Editor</option>
+                    <option value="admin" <?php if ($tipo === 'admin') echo 'selected' ?>>Administrador</option>
                 </select>
             </div>
             <button class="btn btn-primary" name="atualizar"><i class="bi bi-arrow-clockwise"></i> Atualizar</button>
