@@ -1,4 +1,28 @@
-<?php require_once __DIR__ . '/../includes/cabecalho-admin.php'; ?>
+<?php 
+
+use Microblog\Helpers\Utils;
+use Microblog\Helpers\Validacoes;
+use Microblog\Models\Categoria;
+use Microblog\Services\CategoriaServico;
+
+require_once __DIR__ . '/../vendor/autoload.php';
+$mensagemErro = "";
+$nome = "";
+
+if ($_SERVER['REQUEST_METHOD'] === "POST"){
+    try{
+        $nome =  Utils::normalizarEntrada($_POST["nome"] ?? "");
+
+        Validacoes::validarNome($nome);
+    }catch (InvalidArgumentException $e){
+        $mensagemErro = $e->getMessage();
+    }catch(Throwable $e){
+        Utils::registrarLog($e);
+        $mensagemErro = "Não foi possivel cadastrar a categoria. Tente novamente.";
+    }
+}
+require_once __DIR__ . '/../includes/cabecalho-admin.php'; 
+?>
 
 <div class="row">
     <article class="col-12 bg-white rounded shadow my-1 py-4">
