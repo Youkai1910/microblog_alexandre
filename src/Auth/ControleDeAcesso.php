@@ -16,7 +16,7 @@ final class ControleDeAcesso
     private function __construct(){}
 
     // Inicia a sessão se ela ainda não estiver ativa
-    private static function IniciarSessao(): void
+    private static function iniciarSessao(): void
     {
         // se o status da sessão NÃO FOR ativa (ou, se a sessão está inativa)
         if(session_status() !== PHP_SESSION_ACTIVE){
@@ -33,7 +33,7 @@ final class ControleDeAcesso
 
     public static function exigirLogin(): void
     {
-        self::IniciarSessao();
+        self::iniciarSessao();
 
         // Se NÃO EXISTIR na sessão uma variável chamada id,
        // significa que o usuário NÃO ESTÁ logado
@@ -46,5 +46,22 @@ final class ControleDeAcesso
             exit;
         }
     }
+
+    public static function login(int $id, $nome, string $tipo): void
+    {
+        self::iniciarSessao();
+
+        // cria as variáveis de sessão com os dados de quem está logando
+        $_SESSION['id'] = $id;
+        $_SESSION['nome'] = $nome;
+        $_SESSION['$tipo'] = $tipo;
+    }
     
+    public static function logout(): void
+    {
+        self::iniciarSessao();
+        self::encerrarSessao();
+        header("location:../login.php?logout");
+        exit;
+    }
 }
