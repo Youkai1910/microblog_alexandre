@@ -39,8 +39,7 @@ final class ControleDeAcesso
        // significa que o usuário NÃO ESTÁ logado
         if (!isset($_SESSION['id'])) {
             // encerrar a sessão (ainda programar)
-
-
+            self::encerrarSessao();
 
             // redirecionar para pagina de login
             header("location:../login.php?acesso_proibido");
