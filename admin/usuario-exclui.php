@@ -14,5 +14,5 @@ header("location:usuarios.php");
 exit;
 } catch (Throwable $e) {
 Utils::registrarLog($e);
-Utils::alertaErro("Nao foi possivel excluir o usuario. Tente novamente");
+Utils::alertaErro("Nao foi possivel excluir o usuário. Tente novamente");
 }
