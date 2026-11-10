@@ -33,13 +33,11 @@ final class CategoriaServico
 
     public function inserir(Categoria $categoria): void
     {
-        $sql = "INSERT INTO categorias (id, nome)
-          VALUES(:id, :nome)";
+        $sql = "INSERT INTO categorias (nome)
+          VALUES(:nome)";
         try {
             $consulta = $this->conexao->prepare($sql);
-            $consulta->bindValue(":id", $categoria->getId());
             $consulta->bindValue(":nome", $categoria->getNome());
-
             $consulta->execute();
         } catch (PDOException $e) {
             Utils::registrarLog($e);
