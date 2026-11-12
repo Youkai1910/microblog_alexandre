@@ -1,5 +1,8 @@
 <?php
+
 namespace Microblog\Auth;
+
+use Microblog\Enums\TipoUsuario;
 
 /* Sessões no PHP
 Funcionalidade usada para controlar o acesso a determinadas
@@ -13,19 +16,19 @@ senha, biometria, por dois fatores etc. */
 final class ControleDeAcesso
 {
     //  Impedir a criação de objeto/instância
-    private function __construct(){}
+    private function __construct() {}
 
     // Inicia a sessão se ela ainda não estiver ativa
     private static function iniciarSessao(): void
     {
         // se o status da sessão NÃO FOR ativa (ou, se a sessão está inativa)
-        if(session_status() !== PHP_SESSION_ACTIVE){
-         // Então, iniciamos a sessão
-         session_start();
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            // Então, iniciamos a sessão
+            session_start();
         }
     }
 
-    private static function encerrarSessao():void
+    private static function encerrarSessao(): void
     {
         $_SESSION = []; // limpar os dados do usuário armazenados na sessão
         session_destroy(); // destrói/remove quaisquer dados da sessão no navegador
@@ -36,7 +39,7 @@ final class ControleDeAcesso
         self::iniciarSessao();
 
         // Se NÃO EXISTIR na sessão uma variável chamada id,
-       // significa que o usuário NÃO ESTÁ logado
+        // significa que o usuário NÃO ESTÁ logado
         if (!isset($_SESSION['id'])) {
             // encerrar a sessão (ainda programar)
             self::encerrarSessao();
@@ -56,12 +59,22 @@ final class ControleDeAcesso
         $_SESSION['nome'] = $nome;
         $_SESSION['$tipo'] = $tipo;
     }
-    
+
     public static function logout(): void
     {
         self::iniciarSessao();
         self::encerrarSessao();
         header("location:../login.php?logout");
         exit;
+    }
+
+    // Verificar se o usuário logado é tipo admin
+    public static function usuarioEhAdmin(): bool
+    {
+        self::iniciarSessao();
+
+        // Se variável de sessão 'tipo' existe E o valor dela é 'admin
+        // então significa que o usuário logado é um administrador
+        return isset($_SESSION['tipo']) && $_SESSION['tipo'] === TipoUsuario::ADMIN->value;
     }
 }
