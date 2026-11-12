@@ -1,6 +1,7 @@
 <?php
 
 use Microblog\Helpers\Utils;
+use Microblog\Services\UsuarioServico;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
@@ -35,6 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header("location:login.php?erro");
         exit;
     }
+    //Utils::dump($usuario);
 }
 require_once __DIR__ . '/includes/cabecalho.php'; ?>
 
