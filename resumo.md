@@ -1,24 +1,26 @@
-# Resumo da branch `03_aula-0511`
+# Resumo da branch `04_exercicio-categorias`
 
-Este resumo registra o trabalho realizado nesta branch em 05/11/2026, dando continuidade ao desenvolvimento do microblog.
+Este resumo registra somente o trabalho acrescentado nesta branch, em continuidade à edição de usuários feita na branch anterior.
 
-## Atualização de usuários
+## Gerenciamento de categorias
 
-1. **Atualização no banco de dados** — `4469643` (`Adiciona atualização de usuários no serviço`)
-   - Implementou `UsuarioServico::atualizar()`, usando uma consulta preparada para atualizar nome, e-mail, senha e tipo do usuário pelo ID.
-   - Em caso de falha no banco, registra os detalhes no log e lança uma exceção para a página tratar.
-
-2. **Validação dos dados do formulário** — `1636556` (`Validar dados de atualização do usuário`)
-   - Conectou o envio do formulário às validações de nome, e-mail e tipo de usuário.
-   - Converte o tipo validado para a enumeração `TipoUsuario`.
-
-3. **Conclusão do fluxo de edição e correção da senha** — `cdede45` (`Implementar o tratamento de atualizações de usuário`)
-   - Passou os dados validados para o modelo `Usuario` e chamou o serviço para gravar a atualização.
-   - Se o usuário informa uma senha, o sistema valida o valor e compara com o hash atual. Uma senha diferente é codificada antes de ser salva; se for igual, o hash existente é mantido.
-   - Se o campo de senha fica vazio, conserva o hash existente, permitindo atualizar os outros dados sem alterar a senha.
-   - Corrigiu a lógica invertida no `if`: antes, o campo preenchido mantinha a senha antiga e o campo vazio era enviado para validação.
-   - Após sucesso, redireciona para a listagem de usuários. Erros de validação são apresentados, e falhas inesperadas são registradas no log.
+- **Serviço e modelo de categorias** — `7974641` (`Adicione a categoria de serviço e um ID opcional`)
+  - Criou `CategoriaServico` com operações para listar e inserir categorias.
+  - Permitiu criar categorias sem informar o ID, deixando a geração do identificador a cargo do banco.
+- **Listagem administrativa** — `7901a69` (`Listar categorias dinamicamente na área administrativa`)
+  - Substituiu os dados estáticos da página administrativa por categorias carregadas do banco.
+  - Incluiu a contagem de registros, escape da saída HTML e registro/exibição de falhas de carregamento.
+- **Criação e validação** — `a5da636` (`Validar nomes de categorias no momento da criação`) e `19bb369` (`Update categoria-insere.php`)
+  - Validou o nome informado e conectou o formulário à inserção, apresentando erros de forma apropriada.
+- **Consulta e atualização** — `5688e04` (`Adicionar métodos de busca e atualização de categorias`) e `b212383` (`Valida e trata erros ao atualizar categoria`)
+  - Implementou busca por ID e atualização no serviço.
+  - Carregou a categoria para edição, validou os dados recebidos e tratou erros sem deixar de escapar o conteúdo exibido.
+- **Geração de ID e tratamento de erros** — `c274833` (`Gera automaticamente o ID da categoria`) e `f548030` (`Exibe erros ao atualizar usuário`)
+  - Ajustou a criação para gerar o ID automaticamente e melhorou o retorno de erro no fluxo de atualização de usuário.
+- **Exclusão de categorias** — `64a5b2e` (`Adicionar método de exclusão de categoria`) e `9e2be49` (`Implementar a exclusão de categorias a partir da página administrativa...`)
+  - Adicionou a exclusão ao serviço e à área administrativa.
+  - Corrigiu a cláusula SQL `WHERE` usada pelo serviço, além de tratar erros na operação.
 
 ## Resultado
 
-A edição de usuários está conectada do formulário até a atualização no banco, incluindo a troca opcional de senha. Este arquivo resume somente o trabalho da branch `03_aula-0511`; cada branch deve ter sua própria versão de `resumo.md` para que o Git exiba o resumo correspondente quando houver troca de branch.
+A área administrativa passou a oferecer o fluxo de gerenciamento de categorias com listagem dinâmica, criação, edição e exclusão, incluindo validações e tratamento de falhas. Este resumo não inclui mudanças posteriores de exclusão de usuários ou autenticação.
