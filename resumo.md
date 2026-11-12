@@ -1,24 +1,30 @@
-# Resumo da branch `03_aula-0511`
+# Resumo da branch `06_aula-1211`
 
-Este resumo registra o trabalho realizado nesta branch em 05/11/2026, dando continuidade ao desenvolvimento do microblog.
+Este resumo registra o trabalho de código feito em 12/11/2026 nesta branch. As alterações locais ainda não commitadas estão identificadas separadamente.
 
-## Atualização de usuários
+## Alterações commitadas
 
-1. **Atualização no banco de dados** — `4469643` (`Adiciona atualização de usuários no serviço`)
-   - Implementou `UsuarioServico::atualizar()`, usando uma consulta preparada para atualizar nome, e-mail, senha e tipo do usuário pelo ID.
-   - Em caso de falha no banco, registra os detalhes no log e lança uma exceção para a página tratar.
+### Login e busca de usuários
 
-2. **Validação dos dados do formulário** — `1636556` (`Validar dados de atualização do usuário`)
-   - Conectou o envio do formulário às validações de nome, e-mail e tipo de usuário.
-   - Converte o tipo validado para a enumeração `TipoUsuario`.
+- Adicionou `UsuarioServico::buscarPorEmail()`, com consulta preparada ao banco.
+- Conectou o formulário de login à busca do usuário e à verificação da senha com `password_verify()`.
+- Incluiu validação dos campos obrigatórios, feedback para credenciais incorretas e tratamento de falhas, com registro de erros no log.
 
-3. **Conclusão do fluxo de edição e correção da senha** — `cdede45` (`Implementar o tratamento de atualizações de usuário`)
-   - Passou os dados validados para o modelo `Usuario` e chamou o serviço para gravar a atualização.
-   - Se o usuário informa uma senha, o sistema valida o valor e compara com o hash atual. Uma senha diferente é codificada antes de ser salva; se for igual, o hash existente é mantido.
-   - Se o campo de senha fica vazio, conserva o hash existente, permitindo atualizar os outros dados sem alterar a senha.
-   - Corrigiu a lógica invertida no `if`: antes, o campo preenchido mantinha a senha antiga e o campo vazio era enviado para validação.
-   - Após sucesso, redireciona para a listagem de usuários. Erros de validação são apresentados, e falhas inesperadas são registradas no log.
+### Sessão e autorização administrativa
 
-## Resultado
+- Integraram-se o login e o logout ao controle de sessão.
+- Foram adicionadas verificações para identificar administradores e proteger páginas e operações de gerenciamento de usuários e categorias.
+- O menu administrativo passou a exibir as opções de usuários e categorias somente para administradores.
+- Corrigiu-se o uso da chave `tipo` da sessão, usada para identificar o nível de acesso.
+- A página de acesso não autorizado passou a informar quem está logado e que não tem permissão para o recurso.
 
-A edição de usuários está conectada do formulário até a atualização no banco, incluindo a troca opcional de senha. Este arquivo resume somente o trabalho da branch `03_aula-0511`; cada branch deve ter sua própria versão de `resumo.md` para que o Git exiba o resumo correspondente quando houver troca de branch.
+### Painel, perfil e proteção de conta
+
+- O painel passou a exibir o nome e o nível de acesso do usuário.
+- A exclusão da própria conta foi bloqueada.
+- O formulário de perfil passou a carregar os dados do usuário atual a partir do ID armazenado na sessão.
+
+## Alterações locais ainda não commitadas
+
+- `admin/meu-perfil.php`: foi iniciado o processamento do formulário enviado para atualizar os dados do próprio perfil, com validação e chamada ao serviço de usuários.
+- `admin/index.php`: foi acrescentada uma saudação e uma mensagem de confirmação após a atualização do perfil.
