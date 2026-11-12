@@ -1,24 +1,30 @@
-# Resumo da branch `03_aula-0511`
+# Resumo da branch `05_alua-1011`
 
-Este resumo registra o trabalho realizado nesta branch em 05/11/2026, dando continuidade ao desenvolvimento do microblog.
+Este resumo registra somente as mudanças acrescentadas nesta branch, após a branch `04_exercicio-categorias`.
 
-## Atualização de usuários
+## Exclusão de usuários
 
-1. **Atualização no banco de dados** — `4469643` (`Adiciona atualização de usuários no serviço`)
-   - Implementou `UsuarioServico::atualizar()`, usando uma consulta preparada para atualizar nome, e-mail, senha e tipo do usuário pelo ID.
-   - Em caso de falha no banco, registra os detalhes no log e lança uma exceção para a página tratar.
+- **Exclusão no serviço e na área administrativa** — `64ef435` (`Implementa exclusão de usuários`)
+  - Adicionou a exclusão de usuários ao serviço e conectou a ação administrativa ao banco.
+  - Normalizou e verificou o ID recebido, registrando falhas e apresentando uma mensagem de erro quando necessário.
+- **Correção de acentuação** — `4b857f9` (`Corrige acentuação na mensagem de exclusão`)
+  - Corrigiu a mensagem de retorno relacionada à exclusão.
 
-2. **Validação dos dados do formulário** — `1636556` (`Validar dados de atualização do usuário`)
-   - Conectou o envio do formulário às validações de nome, e-mail e tipo de usuário.
-   - Converte o tipo validado para a enumeração `TipoUsuario`.
+## Controle de acesso por sessão
 
-3. **Conclusão do fluxo de edição e correção da senha** — `cdede45` (`Implementar o tratamento de atualizações de usuário`)
-   - Passou os dados validados para o modelo `Usuario` e chamou o serviço para gravar a atualização.
-   - Se o usuário informa uma senha, o sistema valida o valor e compara com o hash atual. Uma senha diferente é codificada antes de ser salva; se for igual, o hash existente é mantido.
-   - Se o campo de senha fica vazio, conserva o hash existente, permitindo atualizar os outros dados sem alterar a senha.
-   - Corrigiu a lógica invertida no `if`: antes, o campo preenchido mantinha a senha antiga e o campo vazio era enviado para validação.
-   - Após sucesso, redireciona para a listagem de usuários. Erros de validação são apresentados, e falhas inesperadas são registradas no log.
+- **Auxiliar de sessão** — `412c359` (`Adicionar auxiliar de controle de acesso baseado em sessão`)
+  - Criou `ControleDeAcesso` para iniciar e encerrar sessões, exigir uma sessão autenticada e redirecionar visitantes não autenticados para o login.
+- **Proteção da área administrativa** — `932659f` (`Protege o cabeçalho administrativo`)
+  - Aplicou a verificação de login ao cabeçalho compartilhado da administração.
+- **Operações de login e logout** — `89adc26` (`Adiciona login e logout à autenticação`)
+  - Acrescentou ao auxiliar os métodos para armazenar os dados de usuário na sessão e encerrar a sessão durante o logout.
+
+## Validação e feedback no login
+
+- **Campos e mensagens** — `1477a8a` (`Validar campos de login e exibir feedback`)
+  - Normalizou o e-mail enviado e interrompeu o envio quando e-mail ou senha estão vazios.
+  - Acrescentou mensagens para campos obrigatórios, credenciais incorretas, logout, acesso não autorizado e falha no login.
 
 ## Resultado
 
-A edição de usuários está conectada do formulário até a atualização no banco, incluindo a troca opcional de senha. Este arquivo resume somente o trabalho da branch `03_aula-0511`; cada branch deve ter sua própria versão de `resumo.md` para que o Git exiba o resumo correspondente quando houver troca de branch.
+Esta branch acrescenta ao projeto a exclusão de usuários e as bases de controle de acesso por sessão, além da validação dos campos e do feedback exibido pela página de login. As funcionalidades de categorias descritas no resumo da branch 4 não fazem parte das mudanças exclusivas desta branch.
