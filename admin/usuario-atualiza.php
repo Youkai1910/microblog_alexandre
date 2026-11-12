@@ -26,12 +26,12 @@ try {
     $dadosUsuario = $usuarioServico->buscarPorId($id);
 } catch (Throwable $e) {
     Utils::registrarLog($e);
-    $mensagemErro = "Nao foi possivel carregar os dados do usuario";
+    $mensagemErro = "Nao foi possivel carregar os dados do usuário";
 }
 // Se a consulta retornar null e não tiver, apresentamos uma mensagem avisando que nada foi
 // encontrado
 if ($dadosUsuario === null && $mensagemErro === "") {
-    Utils::alertaErro("Usuario nao encontrado!");
+    Utils::alertaErro("Usuário nao encontrado!");
 }
 
 /* Inicializa variáveis para armazenar os valores do formulário,
