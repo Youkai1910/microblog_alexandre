@@ -26,6 +26,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header("Location: login.php?campos_obrigatorios");
         exit;
     }
+    try {
+        // Buscando o usuário no BD através do e-mail informado
+        $usuarioServico = new UsuarioServico();
+        $usuario = $usuarioServico->buscarPorEmail($email);
+    } catch (Throwable $e) {
+        Utils::registrarLog($e);
+        header("location:login.php?erro");
+        exit;
+    }
 }
 require_once __DIR__ . '/includes/cabecalho.php'; ?>
 
