@@ -40,7 +40,7 @@ $consulta->bindValue(":categoria_id", $noticia->getCategoriaId());
 $consulta->execute();
 
 } catch (PDOException $e) {
-Utils :: registrarLog($e);
+Utils::registrarLog($e);
 throw new Exception("Erro ao inserir noticia");}
 }
 }
