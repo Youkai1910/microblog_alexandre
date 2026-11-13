@@ -3,6 +3,7 @@
 use Microblog\Enums\Destaque;
 use Microblog\Helpers\Utils;
 use Microblog\Helpers\Validacoes;
+use Microblog\Models\Noticia;
 use Microblog\Services\CategoriaServico;
 
 require_once __DIR__ . '/../vendor/autoload.php';
@@ -48,6 +49,8 @@ $destaqueEnum = Destaque::from($destaque);//associando ao ENUM
 
 //Processo da imagem
 $nomeDaImagemEnviada = Utils::upload($_FILES['imagem'] ?? null);
+
+$noticia = new Noticia($titulo, $texto, $resumo, $nomeDaImagemEnviada, $destaqueEnum, $idusuario, $categoria);
 
 } catch (InvalidArgumentException $e) {
 $mensagemErro = $e->getMessage();
