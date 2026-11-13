@@ -5,6 +5,7 @@ use Microblog\Helpers\Utils;
 use Microblog\Helpers\Validacoes;
 use Microblog\Models\Noticia;
 use Microblog\Services\CategoriaServico;
+use Microblog\Services\NoticiaServico;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 require_once __DIR__ . '/../includes/cabecalho-admin.php';
@@ -31,34 +32,39 @@ try {
     $mensagemErro = "Não foi possivel carregar as categorias";
 }
 
-if($_SERVER['REQUEST_METHOD'] === 'POST'){
-try {
-   $titulo = Utils::normalizarEntrada($_POST['titulo'] ?? '');
-$texto = Utils::normalizarEntrada($_POST[ 'texto' ] ?? '');
-$resumo = Utils::normalizarEntrada($_POST['resumo' ] ?? '');
-$destaque = Utils::normalizarEntrada($_POST['destaque'] ?? '');
-$categoria = Utils::normalizarEntrada($_POST['categoria'] ?? '', 'inteiro');
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    try {
+        $titulo = Utils::normalizarEntrada($_POST['titulo'] ?? '');
+        $texto = Utils::normalizarEntrada($_POST['texto'] ?? '');
+        $resumo = Utils::normalizarEntrada($_POST['resumo'] ?? '');
+        $destaque = Utils::normalizarEntrada($_POST['destaque'] ?? '');
+        $categoria = Utils::normalizarEntrada($_POST['categoria'] ?? '', 'inteiro');
 
-Validacoes::validarCategoria($categoria);
-Validacoes::validarTitulo($titulo);
-Validacoes::validarTexto($texto);
-Validacoes::validarResumo($resumo);
-Validacoes::validarDestaque($destaque);
+        Validacoes::validarCategoria($categoria);
+        Validacoes::validarTitulo($titulo);
+        Validacoes::validarTexto($texto);
+        Validacoes::validarResumo($resumo);
+        Validacoes::validarDestaque($destaque);
 
-$destaqueEnum = Destaque::from($destaque);//associando ao ENUM
+        $destaqueEnum = Destaque::from($destaque); //associando ao ENUM
 
-//Processo da imagem
-$nomeDaImagemEnviada = Utils::upload($_FILES['imagem'] ?? null);
+        //Processo da imagem
+        $nomeDaImagemEnviada = Utils::upload($_FILES['imagem'] ?? null);
 
-$noticia = new Noticia($titulo, $texto, $resumo, $nomeDaImagemEnviada, $destaqueEnum, $idusuario, $categoria);
+        $noticia = new Noticia($titulo, $texto, $resumo, $nomeDaImagemEnviada, $destaqueEnum, $idusuario, $categoria);
 
-} catch (InvalidArgumentException $e) {
-$mensagemErro = $e->getMessage();
-} catch (Throwable $e) {
-Utils::registrarLog($e);
-$mensagemErro = "Não foi possivel cadastrar a notícia";
+        // Criando o serviço para poder inserir a nova noticia
+        $noticiaServico = new NoticiaServico();
+        $noticiaServico->inserir($noticia);
 
-}
+        header("location:noticias.php");
+        exit;
+    } catch (InvalidArgumentException $e) {
+        $mensagemErro = $e->getMessage();
+    } catch (Throwable $e) {
+        Utils::registrarLog($e);
+        $mensagemErro = "Não foi possivel cadastrar a notícia";
+    }
 }
 ?>
 
@@ -77,12 +83,12 @@ $mensagemErro = "Não foi possivel cadastrar a notícia";
                 <div class="mb-3">
                     <label class="form-label" for="categoria">Categoria:</label>
                     <select class="form-select" name="categoria" id="categoria">
-                      <option value=""></option>
-                      <?php foreach($listaDeCategorias as $itemCategoria): ?>
-                        <option value="<?= Utils::escaparHtml($itemCategoria['id']) ?>">
-                            <?= Utils::escaparHtml($itemCategoria['nome']) ?>
-                        </option>
-                      <?php endforeach; ?>
+                        <option value=""></option>
+                        <?php foreach ($listaDeCategorias as $itemCategoria): ?>
+                            <option value="<?= Utils::escaparHtml($itemCategoria['id']) ?>">
+                                <?= Utils::escaparHtml($itemCategoria['nome']) ?>
+                            </option>
+                        <?php endforeach; ?>
                     </select>
                 </div>
                 <div class="mb-3">
