@@ -1,10 +1,20 @@
-# Resumo da branch `08_aula-1311`
+# Resumo da branch `09_aula1611`
 
-Registro do trabalho realizado em 13/11/2026 nesta branch.
+Registro do trabalho realizado em 16/11/2026 nesta branch. Este resumo cobre somente as alterações da branch `09_aula1611`.
 
-## Listagem administrativa de notícias
+## Documentação e organização do projeto
 
-- Implementado `NoticiaServico::listarTodos()` com resultados conforme o usuário autenticado: administradores recebem todas as notícias com o nome do autor; editores recebem somente as próprias notícias, sem o nome do autor.
-- Atualizada a página `admin/noticias.php` para carregar e exibir os registros do serviço em vez de usar dados estáticos.
-- A tabela mostra título, data formatada, destaque e operações; a coluna de autor é exibida somente para administradores.
-- Adicionados contador dinâmico, mensagem para lista vazia e tratamento de erros com registro no log e aviso ao usuário.
+- Criado e atualizado `AGENTS.md` com a estrutura do projeto, convenções, configuração local, schema do banco e estado das funcionalidades.
+- Organizadas as imagens do site no diretório `images/`.
+- Ajustada a configuração local da conexão com o banco de dados para remover a senha padrão registrada no código.
+
+## Administração de notícias
+
+- Implementado `NoticiaServico::buscarPorId()` para carregar os dados da notícia, categoria e autor. Administradores podem consultar qualquer notícia; editores só podem consultar as próprias.
+- A página `admin/noticia-atualiza.php` usa o ID recebido pelo link da listagem, carrega todos os campos atuais e as categorias disponíveis, selecionando a categoria da notícia.
+- Implementado `NoticiaServico::atualizar()` e conectado o formulário de edição ao fluxo POST. O servidor valida os campos, mantém a imagem existente quando nenhum arquivo novo é enviado e usa `Utils::upload()` quando há substituição. A atualização limita editores às próprias notícias.
+- Implementado `NoticiaServico::excluir()` com autorização aplicada na consulta SQL. A página `admin/noticia-exclui.php` valida o ID, executa a exclusão e redireciona à listagem em caso de sucesso; tentativa sem notícia correspondente ou sem permissão é bloqueada.
+
+## Verificação
+
+- Executado `php -l` nos arquivos PHP alterados para carregar, atualizar e excluir notícias; a sintaxe foi aprovada.
