@@ -112,4 +112,51 @@ $consulta->execute();
 Utils::registrarLog($e);
 throw new Exception("Erro ao inserir noticia");}
 }
+
+public function atualizar(Noticia $noticia): void
+{
+    $id = $noticia->getId();
+    if ($id === null) {
+        throw new Exception("ID da notícia não informado");
+    }
+
+    $usuarioEhAdmin = ControleDeAcesso::usuarioEhAdmin();
+
+    if (!isset($_SESSION['id']) || !is_int($_SESSION['id'])) {
+        throw new Exception("Usuário não autenticado");
+    }
+
+    $sql = "UPDATE noticias
+            SET titulo = :titulo,
+                texto = :texto,
+                resumo = :resumo,
+                imagem = :imagem,
+                destaque = :destaque,
+                categoria_id = :categoria_id
+            WHERE id = :id";
+
+    if (!$usuarioEhAdmin) {
+        $sql .= " AND usuario_id = :usuario_id";
+    }
+
+    try {
+        $consulta = $this->conexao->prepare($sql);
+        $consulta->bindValue(":titulo", $noticia->getTitulo());
+        $consulta->bindValue(":texto", $noticia->getTexto());
+        $consulta->bindValue(":resumo", $noticia->getResumo());
+        $consulta->bindValue(":imagem", $noticia->getImagem());
+        $consulta->bindValue(":destaque", $noticia->getDestaque()->value);
+        $consulta->bindValue(":categoria_id", $noticia->getCategoriaId(), PDO::PARAM_INT);
+        $consulta->bindValue(":id", $id, PDO::PARAM_INT);
+
+        if (!$usuarioEhAdmin) {
+            $consulta->bindValue(":usuario_id", $_SESSION['id'], PDO::PARAM_INT);
+        }
+
+        $consulta->execute();
+    } catch (PDOException $e) {
+        Utils::registrarLog($e);
+        throw new Exception("Erro ao atualizar notícia");
+    }
+}
 }
