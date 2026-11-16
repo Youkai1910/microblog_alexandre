@@ -66,9 +66,10 @@ O schema atual tem as tabelas `usuarios`, `categorias` e `noticias`:
 - Login consulta usuário por e-mail, verifica o hash da senha e inicia uma sessão com ID, nome e tipo.
 - Administradores gerenciam usuários e categorias. Editores acessam o painel de notícias e a listagem é limitada às notícias próprias.
 - `NoticiaServico::listarTodos()` lista todas as notícias com autor para administradores e apenas as do usuário autenticado para outros usuários.
+- `NoticiaServico::buscarPorId()`, `atualizar()` e `excluir()` permitem ao administrador operar qualquer notícia e restringem editores às notícias associadas ao ID da própria sessão.
 - A inserção de notícia valida os campos, categoria e destaque e processa imagem por `Utils::upload()`.
 - Usuários e categorias possuem serviços de listagem, busca, inserção, atualização e exclusão.
-- Notícias ainda não têm CRUD completo: `NoticiaServico` atualmente implementa listagem e inserção; `admin/noticia-atualiza.php` e `admin/noticia-exclui.php` são protótipos.
+- `admin/noticia-atualiza.php` carrega e valida os campos para atualizar uma notícia, mantendo a imagem existente quando um novo arquivo não é enviado. `admin/noticia-exclui.php` remove a notícia com a checagem de autoria aplicada no serviço.
 - As páginas públicas (`index.php`, `noticia.php`, `noticias-por-categoria.php` e a listagem em `includes/todas.php`) ainda apresentam conteúdo estático/provisório em vez de consultar o banco.
 - `resumo.md` registra o contexto recente de implementação da listagem administrativa de notícias; é uma nota de trabalho, não uma especificação geral.
 

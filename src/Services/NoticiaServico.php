@@ -159,4 +159,37 @@ public function atualizar(Noticia $noticia): void
         throw new Exception("Erro ao atualizar notícia");
     }
 }
+
+public function excluir(int $id): void
+{
+    $usuarioEhAdmin = ControleDeAcesso::usuarioEhAdmin();
+
+    if (!isset($_SESSION['id']) || !is_int($_SESSION['id'])) {
+        throw new Exception("Usuário não autenticado");
+    }
+
+    $sql = "DELETE FROM noticias WHERE id = :id";
+
+    if (!$usuarioEhAdmin) {
+        $sql .= " AND usuario_id = :usuario_id";
+    }
+
+    try {
+        $consulta = $this->conexao->prepare($sql);
+        $consulta->bindValue(":id", $id, PDO::PARAM_INT);
+
+        if (!$usuarioEhAdmin) {
+            $consulta->bindValue(":usuario_id", $_SESSION['id'], PDO::PARAM_INT);
+        }
+
+        $consulta->execute();
+
+        if ($consulta->rowCount() === 0) {
+            throw new Exception("Notícia não encontrada ou sem permissão para exclusão");
+        }
+    } catch (PDOException $e) {
+        Utils::registrarLog($e);
+        throw new Exception("Erro ao excluir notícia");
+    }
+}
 }
