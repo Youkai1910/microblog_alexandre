@@ -19,4 +19,12 @@ capture o ID da notícia recebido via URL ($_GET) e busque os dados completos us
 ## 5.Filtro por Categoria
 continua seguindo o arquivos agents.md, não quero PDO. No noticias-por-categoria.php capture o ID da categoria vindo da URL e liste apenas as notícias pertencentes a ela usando as classes do projeto. Para cada notícia, exiba: título, data formatada (dia/mês/ano), autor e resumo. Se não houver autor associado, exiba 'Equipe Microblog'. Configure o link dinâmico de cada item para abrir noticia.php com o ID da notícia.
 
+## 6.Sistema de Busca Back-end
+Analise primeiro a estrutura do formulário de busca no cabeçalho para garantir que os IDs e classes HTML batam com o JavaScript. (Não quero PDO)
+continue seguindo o arquivos agents.md programe o arquivo resultados.php para receber o termo pesquisado via Get e POST conforme utilizado no projeto
+consulta o banco de dados usando as classes e as operações
+
+## 7.Sistema de Busca Front-end
+continue seguindo os arquivos agents.md analise o arquivo include/cabecalho.php e programe o busca.js usando o JavaScript moderno para enviar o termo digitado para resultados.php de forma assincrona, sem recarregar a pagina, e renderize a resposta na área de resultados do front-end. (Não quero PDO)
+
  
