@@ -6,14 +6,14 @@ use Microblog\Services\CategoriaServico;
 require_once __DIR__ . '/../vendor/autoload.php';
 
 $listaDeCategorias = [];
-$mensagemErro = '';
+$mensagemErroCategorias = '';
 
 try {
   $categoriaServico = new CategoriaServico();
   $listaDeCategorias = $categoriaServico->listarTodos();
 } catch (Throwable $e) {
   Utils::registrarLog($e);
-  $mensagemErro = 'Não foi possível carregar as categorias.';
+  $mensagemErroCategorias = 'Não foi possível carregar as categorias.';
 }
 
 ?>
@@ -47,8 +47,8 @@ try {
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Categorias</a>
               <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <?php if ($mensagemErro !== ''): ?>
-                  <li><span class="dropdown-item-text text-danger"><?= Utils::escaparHtml($mensagemErro) ?></span></li>
+                <?php if ($mensagemErroCategorias !== ''): ?>
+                  <li><span class="dropdown-item-text text-danger"><?= Utils::escaparHtml($mensagemErroCategorias) ?></span></li>
                 <?php elseif ($listaDeCategorias === []): ?>
                   <li><span class="dropdown-item-text text-muted">Nenhuma categoria cadastrada.</span></li>
                 <?php else: ?>

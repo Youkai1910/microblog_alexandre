@@ -85,6 +85,25 @@ final class NoticiaServico
         }
     }
 
+    public function listarPublicasPorCategoria(int $categoriaId): array
+    {
+        $sql = "SELECT n.id, n.data, n.titulo, n.resumo, u.nome AS autor
+                FROM noticias n
+                LEFT JOIN usuarios u ON n.usuario_id = u.id
+                WHERE n.categoria_id = :categoria_id
+                ORDER BY n.data DESC";
+
+        try {
+            $consulta = $this->conexao->prepare($sql);
+            $consulta->bindValue(":categoria_id", $categoriaId, PDO::PARAM_INT);
+            $consulta->execute();
+            return $consulta->fetchAll();
+        } catch (PDOException $e) {
+            Utils::registrarLog($e);
+            throw new Exception("Erro ao listar notícias por categoria");
+        }
+    }
+
     public function buscarPorId(int $id): ?array
     {
         $usuarioEhAdmin = ControleDeAcesso::usuarioEhAdmin();
@@ -118,6 +137,24 @@ final class NoticiaServico
         } catch (PDOException $e) {
             Utils::registrarLog($e);
             throw new Exception("Erro ao buscar notícia por ID");
+        }
+    }
+
+    public function buscarPublicaPorId(int $id): ?array
+    {
+        $sql = "SELECT n.id, n.data, n.titulo, n.texto, n.imagem, u.nome AS autor
+                FROM noticias n
+                LEFT JOIN usuarios u ON n.usuario_id = u.id
+                WHERE n.id = :id";
+
+        try {
+            $consulta = $this->conexao->prepare($sql);
+            $consulta->bindValue(":id", $id, PDO::PARAM_INT);
+            $consulta->execute();
+            return $consulta->fetch() ?: null;
+        } catch (PDOException $e) {
+            Utils::registrarLog($e);
+            throw new Exception("Erro ao buscar notícia pública por ID");
         }
     }
 

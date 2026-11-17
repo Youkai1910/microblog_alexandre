@@ -11,4 +11,12 @@ não quero PDO Para cada notícia marcada como destaque, exiba a imagem, o títu
 ## 3.Pagina Inicial 
 vamos programar a listas de todas as noiticias cadastradas no banco de dados usando as classes do projeto seguindo os arquivos agents.md
 quero manter o html/css configure o link dinamico de cada noticia para abrir noticia.php com o respectivo ID.
+
+## 4.Detalhes da noticia
+continue seguindo o que tem nos arquivos agents.md não quero PDO. No arquivo noticia.php
+capture o ID da notícia recebido via URL ($_GET) e busque os dados completos usando as classes do projeto. Exiba o título, a data formatada no padrão brasileiro (dia/mês/ano), o autor, a imagem e o texto completo. Regra importante: caso a notícia não tenha um autor associado (nulo ou vazio), exiba o texto 'Equipe Microblog' como alternativa.
+
+## 5.Filtro por Categoria
+continua seguindo o arquivos agents.md, não quero PDO. No noticias-por-categoria.php capture o ID da categoria vindo da URL e liste apenas as notícias pertencentes a ela usando as classes do projeto. Para cada notícia, exiba: título, data formatada (dia/mês/ano), autor e resumo. Se não houver autor associado, exiba 'Equipe Microblog'. Configure o link dinâmico de cada item para abrir noticia.php com o ID da notícia.
+
  
