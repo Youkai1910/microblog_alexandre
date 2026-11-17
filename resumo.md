@@ -1,20 +1,23 @@
-# Resumo da branch `09_aula1611`
+# Resumo da branch `10_aula-1711`
 
-Registro do trabalho realizado em 16/11/2026 nesta branch. Este resumo cobre somente as alterações da branch `09_aula1611`.
+Registro das alterações desta branch em 17/11/2026. Este resumo cobre somente a branch `10_aula-1711`.
 
-## Documentação e organização do projeto
+## Páginas públicas
 
-- Criado e atualizado `AGENTS.md` com a estrutura do projeto, convenções, configuração local, schema do banco e estado das funcionalidades.
-- Organizadas as imagens do site no diretório `images/`.
-- Ajustada a configuração local da conexão com o banco de dados para remover a senha padrão registrada no código.
+- O menu em `includes/cabecalho.php` carrega as categorias pelo `CategoriaServico` e gera links com os respectivos IDs.
+- `index.php` exibe dinamicamente os destaques com imagem, título e resumo. `includes/todas.php` lista as notícias cadastradas; os links abrem `noticia.php` com o ID correspondente.
+- `noticia.php` valida o ID recebido pela URL e exibe título, data no formato dia/mês/ano, autor, imagem e texto. Quando o autor não existe ou está vazio, apresenta `Equipe Microblog`.
+- `noticias-por-categoria.php` valida o ID da categoria, mostra seu nome e lista apenas as notícias relacionadas, com título, data, autor e resumo. Também usa `Equipe Microblog` como alternativa quando não há autor.
+- As consultas públicas foram adicionadas ao `NoticiaServico`; as páginas reutilizam os serviços e não contêm consultas PDO.
 
-## Administração de notícias
+## Busca de notícias
 
-- Implementado `NoticiaServico::buscarPorId()` para carregar os dados da notícia, categoria e autor. Administradores podem consultar qualquer notícia; editores só podem consultar as próprias.
-- A página `admin/noticia-atualiza.php` usa o ID recebido pelo link da listagem, carrega todos os campos atuais e as categorias disponíveis, selecionando a categoria da notícia.
-- Implementado `NoticiaServico::atualizar()` e conectado o formulário de edição ao fluxo POST. O servidor valida os campos, mantém a imagem existente quando nenhum arquivo novo é enviado e usa `Utils::upload()` quando há substituição. A atualização limita editores às próprias notícias.
-- Implementado `NoticiaServico::excluir()` com autorização aplicada na consulta SQL. A página `admin/noticia-exclui.php` valida o ID, executa a exclusão e redireciona à listagem em caso de sucesso; tentativa sem notícia correspondente ou sem permissão é bloqueada.
+- `resultados.php` aceita o termo `busca` por GET ou POST e consulta títulos, resumos e textos pelo serviço. Os resultados exibem links para a notícia correspondente.
+- `js/busca.js` envia as consultas por POST de forma assíncrona, com atraso curto entre digitações, e atualiza o contêiner `#resultados` sem recarregar a página.
+- O formulário e a resposta mantêm compatíveis os IDs `form-busca`, `campo-busca` e `resultados`, com limite de 100 caracteres validado no servidor.
 
-## Verificação
+## Documentação e validação
 
-- Executado `php -l` nos arquivos PHP alterados para carregar, atualizar e excluir notícias; a sintaxe foi aprovada.
+- Atualizados `AGENTS.md` e `prompts.md` para registrar as funcionalidades e orientações desta branch.
+- Ajustada a configuração local da conexão do banco para o ambiente utilizado; valores de credenciais não são registrados neste resumo.
+- Os arquivos PHP alterados foram verificados com `php -l`; `js/busca.js` foi verificado com `node --check`. Não foi realizado teste manual integrado com o banco de dados.
