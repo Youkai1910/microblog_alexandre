@@ -5,6 +5,7 @@ namespace Microblog\Services;
 use Exception;
 use Microblog\Auth\ControleDeAcesso;
 use Microblog\Database\ConexaoBD;
+use Microblog\Enums\Destaque;
 use Microblog\Helpers\Utils;
 use Microblog\Models\Noticia;
 use PDO;
@@ -48,6 +49,39 @@ final class NoticiaServico
         } catch (PDOException $e) {
             Utils::registrarLog($e);
             throw new Exception("Erro ao listar notícias");
+        }
+    }
+
+    public function listarDestaques(): array
+    {
+        $sql = "SELECT id, titulo, resumo, imagem
+                FROM noticias
+                WHERE destaque = :destaque
+                ORDER BY data DESC";
+
+        try {
+            $consulta = $this->conexao->prepare($sql);
+            $consulta->bindValue(":destaque", Destaque::SIM->value, PDO::PARAM_STR);
+            $consulta->execute();
+            return $consulta->fetchAll();
+        } catch (PDOException $e) {
+            Utils::registrarLog($e);
+            throw new Exception("Erro ao listar notícias em destaque");
+        }
+    }
+
+    public function listarTodasPublicas(): array
+    {
+        $sql = "SELECT id, data, titulo, resumo
+                FROM noticias
+                ORDER BY data DESC";
+
+        try {
+            $consulta = $this->conexao->query($sql);
+            return $consulta->fetchAll();
+        } catch (PDOException $e) {
+            Utils::registrarLog($e);
+            throw new Exception("Erro ao listar notícias públicas");
         }
     }
 
