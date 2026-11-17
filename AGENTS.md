@@ -12,7 +12,7 @@ Aplicação de microblog em PHP, com páginas públicas e uma área administrati
 - O autoload Composer usa PSR-4: `Microblog\` aponta para `src/`. As páginas carregam `vendor/autoload.php`.
 - O código usa recursos de PHP 8.1 ou posterior, incluindo enums e tipos `mixed`.
 - `composer.json` não declara dependências adicionais nem scripts de build, lint ou teste. Não há suíte de testes automatizados configurada no repositório.
-- Para validar alterações PHP, rode `php -l caminho\do\arquivo.php` nos arquivos alterados. Em mudanças que adicionem classes ou namespaces, atualize/verifique o autoload Composer (`composer dump-autoload`) se necessário. Para alterações de banco ou fluxo, complemente com teste manual no ambiente local.
+- Para validar alterações PHP, rode `php -l caminho\do\arquivo.php` nos arquivos alterados; para `js/busca.js`, use `node --check js\busca.js`. Em mudanças que adicionem classes ou namespaces, atualize/verifique o autoload Composer (`composer dump-autoload`) se necessário. Para alterações de banco ou fluxo, complemente com teste manual no ambiente local.
 
 ## Estrutura
 
@@ -45,6 +45,7 @@ Aplicação de microblog em PHP, com páginas públicas e uma área administrati
 - Páginas administrativas incluem `vendor/autoload.php` e protegem o acesso com `ControleDeAcesso`. `includes/cabecalho-admin.php` também exige login; use `exigirAdmin()` nas operações exclusivas de administrador. O controle atual distingue `admin` e `editor`.
 - Redirecionamentos após operações bem-sucedidas usam `header()` seguido de `exit`.
 - Reutilize os helpers, modelos, enums e serviços existentes em vez de duplicar suas responsabilidades. Preserve o comportamento atual e mantenha alterações focadas.
+- Páginas públicas também usam os serviços para consultas e não devem conter SQL/PDO. Métodos públicos de consulta não devem exigir sessão nem remover as verificações de autorização dos métodos administrativos.
 
 ## Uploads de imagem
 
@@ -67,10 +68,13 @@ O schema atual tem as tabelas `usuarios`, `categorias` e `noticias`:
 - Administradores gerenciam usuários e categorias. Editores acessam o painel de notícias e a listagem é limitada às notícias próprias.
 - `NoticiaServico::listarTodos()` lista todas as notícias com autor para administradores e apenas as do usuário autenticado para outros usuários.
 - `NoticiaServico::buscarPorId()`, `atualizar()` e `excluir()` permitem ao administrador operar qualquer notícia e restringem editores às notícias associadas ao ID da própria sessão.
+- Para páginas públicas, `NoticiaServico` oferece `listarDestaques()`, `listarTodasPublicas()`, `listarPublicasPorCategoria()`, `buscarPublicaPorId()` e `buscarPublicasPorTermo()`. Esses métodos consultam notícias sem exigir autenticação; mantenha `buscarPorId()` e as operações administrativas com as verificações de autorização existentes.
 - A inserção de notícia valida os campos, categoria e destaque e processa imagem por `Utils::upload()`.
 - Usuários e categorias possuem serviços de listagem, busca, inserção, atualização e exclusão.
 - `admin/noticia-atualiza.php` carrega e valida os campos para atualizar uma notícia, mantendo a imagem existente quando um novo arquivo não é enviado. `admin/noticia-exclui.php` remove a notícia com a checagem de autoria aplicada no serviço.
-- As páginas públicas (`index.php`, `noticia.php`, `noticias-por-categoria.php` e a listagem em `includes/todas.php`) ainda apresentam conteúdo estático/provisório em vez de consultar o banco.
+- `index.php` apresenta as notícias em destaque usando `listarDestaques()`; `includes/todas.php` lista todas as notícias com `listarTodasPublicas()`. Os links de ambas as listas abrem `noticia.php` com o ID correspondente.
+- `noticia.php` valida o ID recebido por URL e usa `buscarPublicaPorId()` para exibir os detalhes. `noticias-por-categoria.php` valida o ID da categoria, busca seu nome com `CategoriaServico::buscarPorId()` e lista somente as notícias relacionadas usando `listarPublicasPorCategoria()`. Nas duas páginas, autor nulo ou vazio deve ser apresentado como `Equipe Microblog`.
+- A busca pública usa o formulário `#form-busca`, o campo `#campo-busca` e a área `#resultados` em `includes/cabecalho.php`. `js/busca.js` envia o termo por POST de forma assíncrona e renderiza a resposta HTML de `resultados.php`; esse endpoint também aceita GET. `NoticiaServico::buscarPublicasPorTermo()` pesquisa título, resumo e texto. Preserve os IDs, o parâmetro `busca` e o limite de 100 caracteres do campo e do servidor ao alterar o fluxo.
 - `resumo.md` registra o contexto recente de implementação da listagem administrativa de notícias; é uma nota de trabalho, não uma especificação geral.
 
 ## Cuidados ao alterar
@@ -78,5 +82,6 @@ O schema atual tem as tabelas `usuarios`, `categorias` e `noticias`:
 - `NoticiaServico::listarTodos()` depende de sessão ativa e valida que `$_SESSION['id']` seja um inteiro. Preserve o fluxo de autenticação quando mudar a consulta ou suas chamadas.
 - A propriedade `usuario_id` determina a autoria; não aceite do formulário um ID de autor que possa substituir o usuário autenticado.
 - Mantenha nomes de parâmetros SQL consistentes com os getters dos modelos e com as colunas existentes no schema.
+- Ao alterar a busca, mantenha compatíveis o `name="busca"` do formulário, os IDs usados por `js/busca.js` e o HTML fragmentado devolvido por `resultados.php`. Escape os valores dinâmicos no fragmento antes de renderizá-los.
 - Ao alterar schema, atualize o dump/documentação pertinente e verifique efeitos nas consultas e nos formulários relacionados.
 - Evite tratar páginas provisórias como implementações funcionais e não amplie seu escopo sem requisito explícito.
