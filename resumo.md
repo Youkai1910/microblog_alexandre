@@ -19,5 +19,6 @@ Registro das alterações desta branch em 17/11/2026. Este resumo cobre somente 
 ## Documentação e validação
 
 - Atualizados `AGENTS.md` e `prompts.md` para registrar as funcionalidades e orientações desta branch.
+- `includes/todas.php` usa `NoticiaServico::listarTodasPublicas()` dentro de tratamento de exceções, mostra uma mensagem amigável em caso de falha e uma mensagem quando não existem notícias; títulos, resumos, datas, IDs e demais dados dinâmicos são escapados na saída.
 - Ajustada a configuração local da conexão do banco para o ambiente utilizado; valores de credenciais não são registrados neste resumo.
 - Os arquivos PHP alterados foram verificados com `php -l`; `js/busca.js` foi verificado com `node --check`. Não foi realizado teste manual integrado com o banco de dados.
